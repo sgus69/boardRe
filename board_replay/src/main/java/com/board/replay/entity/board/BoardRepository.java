@@ -13,10 +13,10 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 	//그리고 @Query를 사용한 JPQL방식의 updateBoard()메서드도 구현해본다.
 	
 	
-	String UPDATE_BOARD = "UPDATE Board"+
-			"SET TITLE = :#{#boardRequestDto.title},"+
-			"CONTENT = :#{#boardRequestDto.content},"+
-			"UPDATE_TIME = NOW()" + 
+	String UPDATE_BOARD = "UPDATE BOARD "+// BOARD 와 SET사이에 공백이 있어야 하므로 띄어쓰기 꼭 하기
+			"SET TITLE = :#{#boardRequestDto.title}, "+
+			"CONTENT = :#{#boardRequestDto.content}, "+
+			"UPDATE_TIME = TO_DATE(SYSDATE, 'yyyy-mm-dd hh24:mi:ss') " + 
 			"WHERE ID = :#{#boardRequestDto.id}";
 	
 	@Transactional
