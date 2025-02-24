@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Board Write</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<!-- 부트스트랩 css 추가 -->
+<link rel="stylesheet" href="/css/lib/bootstrap.min.css">
+</head>
+<body>
+	<div class="container">
+		<h1>Board Register.</h1>
+		<form action="/board/write/action" method="post">
+			<div class="mb-3">
+				<label class="form-label">Title.</label>
+				<input type="text" class="form-control" name="title">
+			</div>
+			<div class="mb-3">
+				<label class="form-label">Content.</label>
+				<input class="form-control" row="5" name="content">
+			</div>
+			<div class="mb-3">
+				<label class="form-label">Writer.</label>
+				<input type="text" class="form-control" name="registerId">
+			</div>
+			<button type="button" class="btn btn-success" onclick="javascript:location.href='/board/list'">Previous</button>
+			<button type="submit" class="btn btn-primary">Submit</button>
+		</form>
+	</div>
+	<!--부트스트랩 js, jquery 추가-->
+    <script src="/js/lib/jquery.min.js"></script>
+    <script src="/js/lib/bootstrap.min.js"></script>
+</body>
+</html>

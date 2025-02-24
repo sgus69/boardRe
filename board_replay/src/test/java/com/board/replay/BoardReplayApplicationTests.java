@@ -1,5 +1,6 @@
 package com.board.replay;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -41,7 +42,7 @@ class BoardReplayApplicationTests {
 		
 	}
 	void findAll() {
-		List<BoardResponseDto> list = boardservice.findAll();
+		HashMap<String, Object> list = boardservice.findAll();
 		
 		if(list != null) {
 			System.out.println("# Success findAll():"+ list.toString());

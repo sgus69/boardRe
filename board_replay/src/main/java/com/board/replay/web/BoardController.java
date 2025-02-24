@@ -5,10 +5,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
 import com.board.replay.dto.board.BoardRequestDto;
 import com.board.replay.service.BoardService;
-
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -18,13 +16,20 @@ public class BoardController {
 	private final BoardService service;
 	
 	@GetMapping("/board/list")
-	public String getBoardListPage(Model model, @RequestParam(required=false, defaultValue="0")Integer page, @RequestParam(required=false, defaultValue = "5")Integer size)throws Exception{
+	public String getBoardListPage(Model model
+			, @RequestParam(value="page", required = false, defaultValue = "0") Integer page
+			, @RequestParam(value="size", required = false, defaultValue = "5") Integer size) throws Exception {
 		
-		try {
-			model.addAttribute("resultMap", service.findAll(page, size));
-		}catch(Exception e) {
-			throw new Exception(e.getMessage());
-		}
+		 try { 
+			 
+			 System.out.println("트라이"); 
+			 model.addAttribute("resultMap",service.findAll(page, size)); 
+			 
+			 }catch(Exception e) {
+				 System.out.println("캐치");
+				 throw new Exception(e.getMessage()); 
+		 }
+		 
 		
 		return "/board/list";
 	}

@@ -28,22 +28,38 @@ public class BoardService {
 	}
 	
 	@Transactional(readOnly = true)
-	public List<BoardResponseDto>findAll(){
-		return boardRepository.findAll().stream().map(BoardResponseDto::new).collect(Collectors.toList());
+	public HashMap<String, Object>findAll(){
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		List<Board> list = boardRepository.findAll();
+		
+		if(list != null) {
+			System.out.println("# Success findAll():"+ list.toString());
+		}else {
+			System.out.println("# Fail findAll()~");
+		}
+		
+		resultMap.put("list", list.stream().map(BoardResponseDto::new).collect(Collectors.toList()));
+		
+		return resultMap;
 	}
 	
 	@Transactional(readOnly = true)//readOnly = true는 성능향상
 	public HashMap<String, Object>findAll(Integer page, Integer size){
-		
+		System.out.println("서비스");
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		Page<Board> list = boardRepository.findAll(PageRequest.of(page, size));
-		
+		if(list != null) {
+			System.out.println("# Success findAll(page, size):"+ list.toString());
+		}else {
+			System.out.println("# Fail findAll(page, size)~");
+		}
 		resultMap.put("list", list.stream().map(BoardResponseDto::new).collect(Collectors.toList()));
 		resultMap.put("paging", list.getPageable());
 		resultMap.put("totalCnt", list.getTotalElements());
 		resultMap.put("totalPage", list.getTotalPages());		
 				
-		return resultMap;	}
+		return resultMap;	
+	}
 	
 	public BoardResponseDto findById(Long id) {
 		return new BoardResponseDto(boardRepository.findById(id).get());
