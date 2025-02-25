@@ -53,6 +53,35 @@ public class BoardController {
 		
 		return "/board/view";
 	}
+	@PostMapping("/board/view/action")
+	public String boardViewAction(Model model, BoardRequestDto boardRequestDto)throws Exception{
+
+		try {
+			int result = service.updateBoard(boardRequestDto);
+			
+			if(result < 1) {
+				throw new Exception("#Exception boardViewAction");
+			}
+			
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+		
+		return "redirect:/board/list";
+	}
+	
+	@PostMapping("/board/view/delete")
+	public String boardViewDeleteAction(Model model, @RequestParam()Long id)throws Exception{
+		
+		try {
+			service.deleteById(id);
+		}catch(Exception e){
+			throw new Exception(e.getMessage());
+		}
+		
+		return "redirect:/board/list";
+	}
+	
 	
 	@PostMapping("/board/write/aciton")
 	public String boardWriteAction(Model model, BoardRequestDto dto)throws Exception{

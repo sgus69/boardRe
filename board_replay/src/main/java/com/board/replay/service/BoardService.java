@@ -62,6 +62,9 @@ public class BoardService {
 	}
 	
 	public BoardResponseDto findById(Long id) {
+		
+		boardRepository.updateBoardReadCntInc(id);
+		
 		return new BoardResponseDto(boardRepository.findById(id).get());
 	}
 	
@@ -71,6 +74,9 @@ public class BoardService {
 	
 	public void deleteById(Long id) {
 		boardRepository.deleteById(id);
+	}
+	public void deleteAll(Long[] deleteId) {
+		boardRepository.deleteBoard(deleteId);
 	}
 	
 }

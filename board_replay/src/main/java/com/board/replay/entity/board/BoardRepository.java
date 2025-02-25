@@ -19,8 +19,29 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 			"UPDATE_TIME = TO_DATE(SYSDATE, 'yyyy-mm-dd hh24:mi:ss') " + 
 			"WHERE ID = :#{#boardRequestDto.id}";
 	
+	
+	
+	static final String UPDATE_BOARD_READ_CNT_INC = "UPDATE BOARD "+
+												"SET READ_CNT = READ_CNT +1 "+
+												"WHERE ID = :id";
+	
+	static final String DELETE_BOARD = "DELETE FROM BOARD "+
+						"WHERE ID IN (:deleteList)";
+	
+	
 	@Transactional
 	@Modifying
 	@Query(value = UPDATE_BOARD, nativeQuery = true)
 	public int updateBoard(@Param("boardRequestDto")BoardRequestDto boardREquestDto);
+	
+	@Transactional
+	@Modifying
+	@Query(value = UPDATE_BOARD_READ_CNT_INC, nativeQuery = true)
+	public int updateBoardReadCntInc(@Param("id")Long id);
+	
+	@Transactional
+	@Modifying
+	@Query(value = DELETE_BOARD, nativeQuery = true)
+	public int deleteBoard(@Param("deleteList")Long[] deleteList);
+
 }
