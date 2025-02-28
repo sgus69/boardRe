@@ -1,49 +1,44 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width", initial-scale="1"/>
-<!-- 부트스트랩 css추가 -->
-<link rel="stylesheet" href="/css/lib/bootstrap.min.css">
-<title>Board View</title>
-</head>
-<body>
-	<div class="container">
-		<h1>Board View.</h1>
-		<form id="frm" action="/board/view/action" method="post">
-			<input type="hidden" name="id" th:value="${info.id}">
-			<div class="mb-3">
-				<label class="form-label">Title.</label>
-				<input type="text" class="form-control" name="title" th:value="${info.title}">
-			</div>
-			<div class="mb-3">
-				<label class="form-label">Content.</label>
-				<input type="text" class="form-control" name="content" rows="5" th:text="${info.content}">
-			</div>
-			<div class="mb-3">
-				<label class="form-label">Writer.</label>
-				<input type="text" class="form-control" name="registerId" th:value="${info.registerId}">
-			</div>
-			<div class="float-left">
-				<button type="button" class="btn btn-success" onclick="javascript:location.href='/board/list'">Previous</button>
-				<button type="submit" class="btn btn-primary">Edit</button>
-			</div>
-			<div class="float-right">
-				<button type="button" class="btn btn-danger" th:onclick="fnViewDelete()">Delete</button>
-			</div>
-		</form>
-	</div>
-	<!-- 부트스트랩 js, jquery추가 -->
-	<script type="/js/lib/jquery.min.js"></script>
-	<script type="/js/lib/bootstrap.min.js"></script>
-	<script th:inline="javascript">
-		function fnViewDelete(){
-			if(confirm("Do you want to delete it?")){
-				let frm = $("#frm");
-				frm.attr("action", "/board/veiw/delete");
-				frm.submit();
+<html xmlns:th="http://www.thymeleaf.org"
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
+	  layout:decorator="layout/default_layout">
+	<th:block layout:fragment="content">
+		<div class="container">
+			<h1>Board View.</h1>
+			<form id="frm" action="/board/view/action" method="post">
+				<input type="hidden" name="id" th:value="${info.id}">
+				<div class="mb-3">
+					<label class="form-label">Title.</label>
+					<input type="text" class="form-control" name="title" th:value="${info.title}">
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Content.</label>
+					<input type="text" class="form-control" name="content" rows="5" th:text="${info.content}">
+				</div>
+				<div class="mb-3">
+					<label class="form-label">Writer.</label>
+					<input type="text" class="form-control" name="registerId" th:value="${info.registerId}">
+				</div>
+				<div class="float-left">
+					<button type="button" class="btn btn-success" onclick="javascript:location.href='/board/list'">Previous</button>
+					<button type="submit" class="btn btn-primary">Edit</button>
+				</div>
+				<div class="float-right">
+					<button type="button" class="btn btn-danger" th:onclick="fnViewDelete()">Delete</button>
+				</div>
+			</form>
+		</div>
+		<!-- 부트스트랩 js, jquery추가 -->
+		<script type="/js/lib/jquery.min.js"></script>
+		<script type="/js/lib/bootstrap.min.js"></script>
+		<script th:inline="javascript">
+			function fnViewDelete(){
+				if(confirm("Do you want to delete it?")){
+					let frm = $("#frm");
+					frm.attr("action", "/board/veiw/delete");
+					frm.submit();
+				}
 			}
-		}
-	</script>
-</body>
+		</script>
+	</th:block>
 </html>
