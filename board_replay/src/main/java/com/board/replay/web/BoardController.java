@@ -83,7 +83,7 @@ public class BoardController {
 	}
 	
 	
-	@PostMapping("/board/write/aciton")
+	@PostMapping("/board/write/action")
 	public String boardWriteAction(Model model, BoardRequestDto dto)throws Exception{
 		try {
 			Long result = service.save(dto);
