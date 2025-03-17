@@ -1,4 +1,4 @@
-package com.board.replay.entity;
+package com.board.replay.entity.board.file;
 
 import java.time.LocalDateTime;
 
@@ -9,6 +9,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,5 +32,18 @@ public class BoardFile {
 	
 	@CreatedDate
 	private LocalDateTime registerTime;
+	
+	@Builder
+	public BoardFile(Long id, Long boardId, String origFileName, String saveFileName, int fileSize, String fileExt, String filePath, String deleteYn, LocalDateTime registerTime) {
+		this.id = id;
+		this.boardId = boardId;
+		this.origFileName = origFileName;
+		this.saveFileName = saveFileName;
+		this.fileSize = fileSize;
+		this.fileExt = fileExt;
+		this.filePath = filePath;
+		this.deleteYn = deleteYn;
+		this.registerTime = registerTime;
+	}
 	
 }
