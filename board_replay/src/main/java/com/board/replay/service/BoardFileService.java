@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.board.replay.dto.board.file.BoardFileResponseDto;
+import com.board.replay.entity.board.file.BoardFile;
 import com.board.replay.entity.board.file.BoardFileRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -92,13 +93,45 @@ public class BoardFileService {
 					while(_exist) {
 						index++;
 						
-						saveFileName = randomFileName + "(" + index + ")" + fileExt;
+						saveFileName = randomFileName + "(" + index + ")" 
+									+ fileExt;
+						
+						String dictFile = filePath + File.separator 
+										+ saveFileName;
+						_exist = new File(dictFile).isFile();
+						
+						if(!_exist) {
+							savaFilePath = dictFile;
+						}
 					}
+					mFile.transferTo(new File(savaFilePath));
+				}else {
+					/*생성한 파일 객체를 업로드 처리하지 않으면 임시파일에 저장된 파일이 자동적으로
+					삭제되기 때문에 transferTo(File f)메서드를 이용해서 업로드 처리한다.*/
+					mFile.transferTo(saveFile);
 				}
+				
+				BoardFile boardFile = BoardFile.builder()
+										.boardId(boardId)
+										.origFileName(realFileName)
+										.saveFileName(saveFileName)
+										.fileSize(fileSize)
+										.fileExt(fileExt)
+										.filePath(filePath)
+										.deleteYn("N")
+										.build();
+				resultList.add(boardFileRepository.save(boardFile).getId());
 			}
 		}
 		
 		
-		return 0;
+		return (files.size() == resultList.size())? true : false;
+	}
+	
+	public int updateDeleteYn(Long[] deleteIdList) throws Exception{
+		return boardFileRepository.updateDeleteYn(deleteIdList);
+	}
+	public int deleteBoardFileYn(Long[] boardIdList) throws Exception{
+		return boardFileRepository.deleteBoardFileYn(boardIdList);
 	}
 }
