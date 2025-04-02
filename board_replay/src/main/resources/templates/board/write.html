@@ -18,6 +18,19 @@
 					<label class="form-label">Writer.</label>
 					<input type="text" class="form-control" name="registerId" required>
 				</div>
+				<div class="mb-3">
+					<label class="form-label front-weight-bold">File Upload.</label>
+					<div id="fileDiv">
+						<div class="custom-file mt-1">
+							<input type="file" class="custom-file-input" name="customFile" 
+								onchange="fnChngFile(this);">
+							<label class="custom-file-label" for="customFile">Choose file</label>
+						</div>					
+					</div>
+					<div>
+					<!-- 작성중 -->
+					</div>
+				</div>
 				<button type="button" class="btn btn-success" onclick="javascript:location.href='/board/list'">Previous</button>
 				<button type="submit" class="btn btn-primary">Submit</button>
 			</form>
