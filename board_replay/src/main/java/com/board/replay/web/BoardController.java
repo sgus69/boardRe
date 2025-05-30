@@ -42,20 +42,19 @@ public class BoardController {
 	}
 	
 	@PostMapping("/board/write/action")
-	public String boardWriteAction(Model model, BoardRequestDto dto, MultipartHttpServletRequest multi)throws Exception{
+	public String boardWriteAction(Model model, BoardRequestDto boardRequestDto, MultipartHttpServletRequest multiRequest) throws Exception {
+		
 		try {
-			boolean result = service.save(dto, multi);
-			
-			if(result == false) {
+			if (!service.save(boardRequestDto, multiRequest)) {
 				throw new Exception("#Exception boardWriteAction!");
 			}
-			System.out.println("글쓰기++++");
 		} catch (Exception e) {
-			throw new Exception(e.getMessage());
+			throw new Exception(e.getMessage()); 
 		}
 		
 		return "redirect:/board/list";
 	}
+	
 	@GetMapping("/board/view")
 	public String getBoardViewPage(Model model, BoardRequestDto dto)throws Exception{
 		System.out.println("dto.getid: "+ dto.getId());

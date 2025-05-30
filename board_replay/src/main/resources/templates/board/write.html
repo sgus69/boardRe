@@ -5,36 +5,36 @@
 	<th:block layout:fragment="content">
 		<div class="container">
 			<h1>Board Register.</h1>
-			<form id="frm" action="/board/write/action" method="post">
+			<form id="frm" action="/board/write/action" 
+			method="post" enctype="multipart/form-data">
 				<div class="mb-3">
-					<label class="form-label">Title.</label>
-					<input type="text" class="form-control" name="title" required>
+				    <label class="form-label font-weight-bold"><span class="text-danger">* </span>Title.</label>
+				    <input type="text" class="form-control" name="title" required >
 				</div>
 				<div class="mb-3">
-					<label class="form-label">Content.</label>
-					<input class="form-control" row="5" name="content" required>
+			    	<label class="form-label font-weight-bold"><span class="text-danger">* </span>Content.</label>
+			    	<textarea class="form-control" rows="5" name="content" required ></textarea>
 				</div>
 				<div class="mb-3">
-					<label class="form-label">Writer.</label>
-					<input type="text" class="form-control" name="registerId" required>
+				    <label class="form-label font-weight-bold"><span class="text-danger">* </span>Writer.</label>
+				    <input type="text" class="form-control" name="registerId" required >
 				</div>
 				<div class="mb-3">
-					<label class="form-label front-weight-bold">File Upload.</label>
+				    <label class="form-label font-weight-bold">File Upload.</label>
 					<div id="fileDiv">
 						<div class="custom-file mt-1">
-							<input type="file" class="custom-file-input" name="customFile" 
-								onchange="fnChngFile(this);">
+							<input type="file" class="custom-file-input" id="customFile" name="customFile" onchange="fnChngFile(this);">
 							<label class="custom-file-label" for="customFile">Choose file</label>
-						</div>					
+						</div>
 					</div>
 					<div class="float-right mt-2">
-						<a class="btn btn-primary text-white" href="javascript:fnAddFileDiv();">+</a>
-						<a class="btn btn-danger text-white" href="javascript:fnDelFileDiv();">-</a>
+						<a class="btn btn-primary text-white" href="javascript:fnAddFileDiv();" >+</a>
+						<a class="btn btn-danger text-white" href="javascript:fnDelFileDiv();" >-</a>
 					</div>
-				</div>
+			    </div>
 				<div class="mt-5">
 					<button type="button" class="btn btn-success" onclick="javascript:location.href='/board/list'">Previous</button>
-					<button type="submit" class="btn btn-primary">Submit</button>
+					<button type="button" class="btn btn-primary" onclick="fnSubmit();">Submit</button>
 				</div>
 			</form>
 		</div>
@@ -101,7 +101,7 @@
 			}
 			
 			function fnSubmit(){
-				$("#frm").submit();
+				frm.submit();
 			}
 			
 			$(function(){
