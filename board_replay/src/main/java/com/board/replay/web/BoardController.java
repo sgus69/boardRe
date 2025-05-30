@@ -49,7 +49,7 @@ public class BoardController {
 			if(result == false) {
 				throw new Exception("#Exception boardWriteAction!");
 			}
-			System.out.println("글쓰기+");
+			System.out.println("글쓰기+++");
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
