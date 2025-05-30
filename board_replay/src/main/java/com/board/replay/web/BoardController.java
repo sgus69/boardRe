@@ -5,6 +5,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
 import com.board.replay.dto.board.BoardRequestDto;
 import com.board.replay.service.BoardService;
 import lombok.RequiredArgsConstructor;
@@ -39,27 +41,41 @@ public class BoardController {
 		return "/board/write";
 	}
 	
+	@PostMapping("/board/write/action")
+	public String boardWriteAction(Model model, BoardRequestDto dto, MultipartHttpServletRequest multi)throws Exception{
+		try {
+			boolean result = service.save(dto, multi);
+			
+			if(result == false) {
+				throw new Exception("#Exception boardWriteAction!");
+			}
+			
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+		
+		return "redirect:/board/list";
+	}
 	@GetMapping("/board/view")
 	public String getBoardViewPage(Model model, BoardRequestDto dto)throws Exception{
-		
+		System.out.println("dto.getid: "+ dto.getId());
 		try {
 			if(dto.getId() != null) {
-				model.addAttribute("info", service.findById(dto.getId()));
+				model.addAttribute("resultMap", service.findById(dto.getId()));
 			}
 		} catch (Exception e) {
 			throw new Exception(e.getMessage());
 		}
 		
-		
 		return "/board/view";
 	}
 	@PostMapping("/board/view/action")
-	public String boardViewAction(Model model, BoardRequestDto boardRequestDto)throws Exception{
+	public String boardViewAction(Model model, BoardRequestDto boardRequestDto, MultipartHttpServletRequest multiRequest)throws Exception{
 
 		try {
-			int result = service.updateBoard(boardRequestDto);
+			boolean result = service.updateBoard(boardRequestDto, multiRequest);
 			
-			if(result < 1) {
+			if(!result) {
 				throw new Exception("#Exception boardViewAction");
 			}
 			
@@ -82,21 +98,5 @@ public class BoardController {
 		return "redirect:/board/list";
 	}
 	
-	
-	@PostMapping("/board/write/action")
-	public String boardWriteAction(Model model, BoardRequestDto dto)throws Exception{
-		try {
-			Long result = service.save(dto);
-			
-			if(result<0) {
-				throw new Exception("#Exception boardWriteAction!");
-			}
-			
-		} catch (Exception e) {
-			throw new Exception(e.getMessage());
-		}
-		
-		return "redirect:/board/list";
-	}
 	
 }

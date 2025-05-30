@@ -2,16 +2,20 @@ package com.board.replay.service;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
 import com.board.replay.dto.board.BoardRequestDto;
 import com.board.replay.dto.board.BoardResponseDto;
 import com.board.replay.entity.board.Board;
 import com.board.replay.entity.board.BoardRepository;
+
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
@@ -20,11 +24,22 @@ public class BoardService {
 	//게시판@Service
 	
 	private final BoardRepository boardRepository;
+	private final BoardFileService boardFileService;
 	
 	
 	@Transactional
-	public Long save(BoardRequestDto boardSaveDto) {
-		return boardRepository.save(boardSaveDto.toEntity()).getId();
+	public boolean save(BoardRequestDto boardRequestDto, MultipartHttpServletRequest multi) throws Exception {
+		
+		Board result = boardRepository.save(boardRequestDto.toEntity());
+		
+		boolean resultFlag = false;
+		
+		if(result != null) {
+			boardFileService.uploadFile(multi, boardRequestDto.getId());
+			resultFlag = true;
+		}
+				
+		return resultFlag;
 	}
 	
 	@Transactional(readOnly = true)
@@ -61,22 +76,41 @@ public class BoardService {
 		return resultMap;	
 	}
 	
-	public BoardResponseDto findById(Long id) {
+	public HashMap<String, Object> findById(Long id) throws Exception {
 		
-		boardRepository.updateBoardReadCntInc(id);
+		HashMap<String, Object> resultMap = new HashMap<String, Object>();
 		
-		return new BoardResponseDto(boardRepository.findById(id).get());
+		BoardResponseDto info = new BoardResponseDto(boardRepository.findById(id).get());
+		System.out.println("인포: "+ info);
+		
+		resultMap.put("info", info);
+		resultMap.put("fileList", boardFileService.findByBoardId(info.getId()));
+		
+		return resultMap;
 	}
 	
-	public int updateBoard(BoardRequestDto boardRequestDto) {
-		return boardRepository.updateBoard(boardRequestDto);
+	public boolean updateBoard(BoardRequestDto boardRequestDto, MultipartHttpServletRequest multiRequest) throws Exception {
+		int result = boardRepository.updateBoard(boardRequestDto);
+		
+		boolean resultFlag = false;
+		
+		if(result >0) {
+			boardFileService.uploadFile(multiRequest, boardRequestDto.getId());
+			resultFlag = true;
+		}
+		
+		return resultFlag;
 	}
 	
-	public void deleteById(Long id) {
+	public void deleteById(Long id) throws Exception {
+		Long[] idArr = {id};
+		boardFileService.deleteBoardFileYn(idArr);
 		boardRepository.deleteById(id);
 	}
-	public void deleteAll(Long[] deleteId) {
+	public void deleteAll(Long[] deleteId) throws Exception {
+		boardFileService.deleteBoardFileYn(deleteId);
 		boardRepository.deleteBoard(deleteId);
 	}
+
 	
 }

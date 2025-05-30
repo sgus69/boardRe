@@ -30,6 +30,9 @@ public class BoardFileService {
 	}
 	
 	public List<Long>findByBoardId(Long boardId)throws Exception{
+		
+		System.out.println("보드파일 서비스 boardId: "+ boardId);
+		
 		return boardFileRepository.findByBoardId(boardId);
 	}
 
@@ -38,10 +41,11 @@ public class BoardFileService {
 		
 		//파라미터 이름을 키로 파라미터에 해당하는 파일 정보를 값으로 하는 Map을 가져온다.
 		Map<String, MultipartFile>files = multiRequest.getFileMap();
+		System.out.println("파일 정보를 값으로 하는 Map:" + files);
 		
 		//files.entrySet()의 요소를 읽어온다.
 		Iterator<Entry<String, MultipartFile>>itr = files.entrySet().iterator();
-		
+		System.out.println("files.entrySet()의 요소:" + itr );
 		MultipartFile mFile;
 		
 		String savaFilePath = "", randomFileName = "";
@@ -86,7 +90,7 @@ public class BoardFileService {
 				//파일명이 중복일 경우 파일명(1).확장자, 파일명(2).확장자와 같은 형태로 생성.
 				if(saveFile.isFile()) {
 					boolean _exist = true;
-					
+					System.out.println("_exist: "+ _exist);
 					int index = 0;
 					
 					//동일한 파일명이 존재하지 않을때까지 반복
@@ -124,7 +128,7 @@ public class BoardFileService {
 			}
 		}
 		
-		
+		System.out.println("흠...");
 		return (files.size() == resultList.size())? true : false;
 	}
 	

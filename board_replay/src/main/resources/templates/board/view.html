@@ -121,7 +121,6 @@
 			
 			function fnViewDelete(){
 				if(confirm("Do you want to delete it?")){
-					let frm = $("#frm");
 					frm.attr("action", "/board/veiw/delete");
 					frm.submit();
 				}
@@ -129,7 +128,7 @@
 			
 			function fnSubmit(){
 				if(confirm("Do you want to edit it?")){
-					$("#frm").submit();
+					frm.submit();
 				}
 			}
 			
