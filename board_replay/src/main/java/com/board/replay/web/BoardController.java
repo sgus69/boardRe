@@ -43,9 +43,11 @@ public class BoardController {
 	
 	@PostMapping("/board/write/action")
 	public String boardWriteAction(Model model, BoardRequestDto boardRequestDto, MultipartHttpServletRequest multiRequest) throws Exception {
-		
+		System.out.println("보드롸이트액션 컨트롤러");
 		try {
+			System.out.println("보드롸이트액션 컨트롤러 트라이문");
 			if (!service.save(boardRequestDto, multiRequest)) {
+				System.out.println("보드롸이트액션 컨트롤러 트라이문 이프문");
 				throw new Exception("#Exception boardWriteAction!");
 			}
 		} catch (Exception e) {
@@ -68,6 +70,7 @@ public class BoardController {
 		
 		return "/board/view";
 	}
+	
 	@PostMapping("/board/view/action")
 	public String boardViewAction(Model model, BoardRequestDto boardRequestDto, MultipartHttpServletRequest multiRequest)throws Exception{
 

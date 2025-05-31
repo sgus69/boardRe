@@ -22,8 +22,7 @@ public interface BoardFileRepository extends JpaRepository<BoardFile, Long>{
 										"WHERE BOARD_ID IN (:boardIdList)";
 	
 	@Query(value = SELECT_FILE_ID, nativeQuery = true)
-	public List<Long> findByBoardId(@Param("boardId")Long boardId);
-
+	public List<Long> findByBoardId(@Param("boardId") Long boardId);
 	
 	@Transactional
 	@Modifying

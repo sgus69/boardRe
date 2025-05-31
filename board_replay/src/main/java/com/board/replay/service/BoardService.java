@@ -29,13 +29,15 @@ public class BoardService {
 	
 	@Transactional
 	public boolean save(BoardRequestDto boardRequestDto, MultipartHttpServletRequest multi) throws Exception {
-		
+		System.out.println("서비스");
 		Board result = boardRepository.save(boardRequestDto.toEntity());
 		
 		boolean resultFlag = false;
 		
+		System.out.println("서비스 리절트"+ result);
+		System.out.println("서비스 아이디"+ result.getId());
 		if(result != null) {
-			boardFileService.uploadFile(multi, boardRequestDto.getId());
+			boardFileService.uploadFile(multi, result.getId());
 			resultFlag = true;
 		}
 				
@@ -79,6 +81,8 @@ public class BoardService {
 	public HashMap<String, Object> findById(Long id) throws Exception {
 		
 		HashMap<String, Object> resultMap = new HashMap<String, Object>();
+		
+		boardRepository.updateBoardReadCntInc(id);
 		
 		BoardResponseDto info = new BoardResponseDto(boardRepository.findById(id).get());
 		System.out.println("인포: "+ info);
