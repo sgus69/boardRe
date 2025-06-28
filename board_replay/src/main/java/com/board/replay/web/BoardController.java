@@ -1,5 +1,7 @@
 package com.board.replay.web;
 
+import javax.management.RuntimeErrorException;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,7 +42,7 @@ public class BoardController<MultipartHttpServeletRequest> {
 				if(boardRequestDto.getId()!=null)
 				model.addAttribute("resultMap",boardService.findById(boardRequestDto.getId()));
 			} catch (Exception e) {
-				throw new Exception(e.getMessage());
+				throw new RuntimeException("게시글 상세페이지 불러오기 실패",e);
 			}
 		
 		return "/board/view";

@@ -1,170 +1,190 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" 
-	  layout:decorate="layout/default_layout">
-	<th:block layout:fragment="content">
-		<div class="container">
-			<h1>Board View.</h1>
-			<form id="frm" action="/board/view/action" method="post"
-			th:with="info=${resultMap.info}" enctype="multipart/form-data">
-				<input type="hidden" name="id" th:value="${info.id}">
-				<div class="mb-3">
-					<label class="form-label font-weight-bold"><span class="text-danger">* </span>Title.</label>
-					<input type="text" class="form-control" name="title" th:value="${info.title}" required >
-				</div>
-				<div class="mb-3">
-					<label class="form-label font-weight-bold"><span class="text-danger">* </span>Content.</label>
-					<textarea class="form-control" rows="5" name="content" th:text="${info.content}" required ></textarea>
-				</div>
-				<div class="mb-3">
-					<label class="form-label font-weight-bold"><span class="text-danger">* </span>Writer.</label>
-					<input type="text" class="form-control" name="registerId" th:value="${info.registerId}" required >
-				</div>
-				<div class="mb-3">
-					<label class="form-label font-weight-bold mt-2">File Upload.</label>
-					<div class="mb-3" id="fileDiv">
-						<div class="custom-file mt-1">
-							<input type="file" class="custom-file-input" id="customFile"
-							name="customFile" onchange="fnChngFile(this);">
-							<label class="custom-file-label" for="customFile">Choose file</label>
-						</div>
-					</div>
-					<div class="float-right mt2">
-						<a class="btn btn-primary text-white" href="javascript:fnAddFileDiv();">+</a>
-						<a class="btn btn-danger text-white" href="javascript:fnDelFileDiv();">-</a>
-					</div>
-					<th:block th:if="${resultMap.fileList}">
-						<div class="fileList mt-3" th:each="id:${resultMap.fileList}">
-							<img alt="image file" style= "width: 50%" class="form-control img-thumbnail mt-3"
-							th:src="@{/file/download(id=${id})}">
-							<div class="mt-2">
-								<a class="btn btn-dark" th:href="@{file/download(id=${id})}">Download</a>
-								<button type="button" class="btn btn-danger" th:onclick="fnFileDelete(this, [[${id}]])">Delete File</button>
-							</div>
-						</div>
-					</th:block>
-				</div>
-				<div class="clearfix mt-5">
-					<div class="">
-						<button type="button" class="btn btn-success" onclick="javascript:location.href='/board/list'">Previous</button>
-						<button type="submit" class="btn btn-primary" onclick="fnSubmit()">Edit</button>
-						<button type="button" class="btn btn-danger" th:onclick="fnViewDelete()">Delete</button>
+<html xmlns:th="http://www.thymeleaf.org" 
+	  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+ 	  layout:decorate="layout/default_layout">
+ 	  <!-- layout Content -->
+<th:block layout:fragment="content">
+	<div class="container">
+		<h1>Board View.</h1>
+		<form id="frm" action="/board/view/action" method="post"
+		th:with="info=${resultMap.info}" enctype="multipart/form-data">
+			<input type="hidden" name="id" th:value="${info.id}">
+			<div class="mb-3">
+				<label class="form-label font-weight-bold">Title.</label>
+				<input type="text" class="read form-control" name="title" th:value="${info.title}" readonly="readonly">
+			</div>
+			<div class="mb-3">
+				<label class="form-label font-weight-bold">Content</label>
+				<textarea class="read form-control"  rows="5"
+					name="content" th:text="${info.content}" readonly="readonly">
+				</textarea>
+			</div>
+			<div class="mb-3">
+				<label class="form-label font-weight-bold">Writer.</label>
+				<input type="text" class="form-control" name="registerId" th:value="${info.registerId}" readonly="readonly">
+			</div>
+			<div class="mb-3">
+				<label class="form-label font-weight-bold mt-2">File Upload.</label>
+				<div class="mb-3" id="fileDiv" >
+					<div class="custom-file mt-1 save" style="display:none">
+						<input type="file" class="custom-file-input" id="customFile" name="customFile" onchange="fnChngFile(this);">
+						<label class="custom-file-label" for="customFile">Choose file</label>
 					</div>
 				</div>
-			</form>
-		</div>
-		<!-- 부트스트랩 js, jquery추가 -->
-		<script th:inline="javascript">
-			let frm = $("#frm");
-			let $origFileDiv = $(".custom-file");
-			let fileMaxCnt = 3,
-				fileMaxSize = 10485760,
-				fileAllowExt = ["jpg", "jpeg", "png"];
-			let deleteFileIdArr = [];
+				<div class="float-right mt-2 block" style="display: none;">
+				    <a class="btn btn-primary text-white" href="javascript:fnAddFileDiv();" >+</a>
+					<a class="btn btn-danger text-white" href="javascript:fnDelFileDiv();" >-</a>
+				</div>
+				<th:block th:if="${resultMap.fileList}">
+				<div class="fileList mt-3" th:each="id : ${resultMap.fileList}">
+					<img alt="image file" style="width: 50%" class="form-control img-thumbnail mt-3"
+					th:src="@{/file/download(id=${id})}" >
+					<div>
+						<a class="btn btn-dark" th:href="@{/file/download(id=${id})}">Download</a>
+						<button type="button" class="btn btn-danger fileDelete" th:onclick="fnFileDelete(this, [[${id}]])">Delete File</button>
+					</div>
+				</div>
+				</th:block>
+			</div>
 			
-			function fnAddFileDiv(){
-				let fileDivCnt = $(".custom-file").length;
+			<div class="float-left">
+				<button type="button" class="btn btn-success"
+				onclick="javascript:location.href='/board/list'">Previous</button>
+				<button type="button" class="btn edit btn-primary" th:onclick="edit()">Edit</button>
+				<button type="button" class="btn save btn-primary" onclick="fnSubmit();" style="display:none;">Save</button>
+			</div>
+			<div class="float-right">
+				<button type="button" class="btn btn-danger" th:onclick="fnViewDelete()">Delete</button>
+			</div>
+		</form>
+	</div>
+	<!-- 부트스트랩 js, jquery 추가  -->
+	<script th:inline="javascript">
+		let frm = $("#frm");
+		let $origFileDiv = $(".custom-file");
+		let fileMaxCnt = 3, fileMaxSize = 10485760, fileAllowExt = ["jpg","jpeg","png"];
+		let deleteFileIdArr = [];
+		
+		$(document).ready(function(){
+			$(".fileDelete").css("display", "none");
+		})
+		
+		function fnAddFileDiv() {
+			let fileDivCnt = $(".custom-file").length;
+			
+			if (fileDivCnt >= fileMaxCnt) {
+				alert("Can't add any more file.");
+				return false;
+			}
+			
+			let $copyFileDiv = $origFileDiv.clone(true);
+			
+			$copyFileDiv.find("input").val("");
+			$copyFileDiv.find("label").text("Choose file");
+			$copyFileDiv.find("label").attr("for", "customFile" + fileDivCnt);
+			$copyFileDiv.find("input").attr("id", "customFile" + fileDivCnt);
+			$copyFileDiv.find("input").attr("name", "customFile" + fileDivCnt);
+			
+			$("#fileDiv").append($copyFileDiv);
+		}
+		
+		function fnDelFileDiv() {
+			if ($(".custom-file").length <= 0) {
+				alert("Can't Delete any more file.");
+				return false;
+			}
+			$(".custom-file")[$(".custom-file").length - 1].remove();
+		}
+		
+		function fnChngFile(obj) {
+			let fileObj  = $(obj)[0];
+			let fileVal	= fileObj.files[0].name;
+			console.log(fileVal);
+			let fileSize	= fileObj.files[0].size;
+			let fileExt	= fileVal.substring(fileVal.lastIndexOf(".") + 1, fileVal.length); 
+			let flag = true;
+			
+			if (fileAllowExt.indexOf(fileExt.toLowerCase()) < 0) {
+				alert("It is not a registrable extension.");
+			} else if (fileSize > fileMaxSize) {
+				alert("Attachments can be registered up to 10MB.");
+			} else if (($(".fileList").length + $(".custom-file-input").length) > 3) {
+				alert("Attachments can be registered up to 3 number.");
+			} else {
+				flag = false;
+				$(obj).next("label").text(fileVal);
+			}
+			
+			if (flag) {
+				$(obj).val("");
+				$(obj).next("label").text("Choose file");
+			}
+		}
+		
+		function fnFileDelete(obj, id){
+			if(confirm("Do you want to file delete it?")){
+				$(obj).parents(".fileList").remove();
+				deleteFileIdArr.push(id);
+			}
+		}
+		
+		function edit(){
+			var inputs = document.getElementsByClassName('read');
+			for(var i=0; i<inputs.length; i++){
+				inputs[i].readOnly = false;
+			}
+			$(".edit").css("display", "none");
+			$(".save").css("display", "inline-block");
+			$(".block").css("display", "contents");
+			$(".fileDelete").css("display", "inline-block");
+			
+		}
+		function fnViewDelete(){
+			if(confirm("Do you want to delete it?")){
 				
-				if(fileDivCnt >= fileMaxCnt){
-					alert("Can't add any more file.");
-					return false;
-				}
-				
-				let $copyFileDiv = $origFileDiv.clone(true);
-				
-				$copyFileDiv.find("input").val("");
-				$copyFileDiv.find("label").text("Choose file");
-				$copyFileDiv.find("label").attr("for", "customFile" + fileDivCnt);
-				$copyFileDiv.find("input").attr("id", "customFile" + fileDivCnt);
-				$copyFileDiv.find("input").attr("name", "customFile" + fileDivCnt);
-				
-				$("#fileDiv").append($copyFileDiv);
+				frm.attr("action", "/board/view/delete");
+				frm.attr("method", "post");
+				frm.submit();
 			}
-			
-			function fnDelFileDiv(){
-				if($(".custom-file").length <=1){
-					alert("Can't Delete any more file.");
-					return false;
-				}
-				$(".custom-file")[$(".custom-file").length - 1].remove();
+		}
+		
+		function fnSubmit() {
+			if (confirm("Do you want to edit it?")) {
+				frm.submit();
 			}
-			
-			function fnChngFile(obj){
-				let fileObj = $(obj)[0];
-				let fileVal = fileObj.files[0].name;
-				let fileSize = fileObj.files[0].size;
-				let fileExt = fileVal.substring(fileVal.lastIndexOf(".") + 1, fileVal.length);
-				let flag = true;
-				
-				if(fileAllowExt.indexOf(fileExt.toLowerCase())<0){
-					alert("It is not a registrable extension.");
-				}else if(fileSize > fileMaxSize){
-					alert("Attachments can be registered up to 10MB.");
-				}else if(($(".fileList").length + $(".custom-file-input").length)>3){
-					alert("Attachments can be registered up to 3number.")
-				}else{
-					flag = false;
-					$(obj).next("label").text(fileVal);
-				}
-				if(flag){
-					$(obj).val("");
-					$(obj).next("label").text("Choose file");
-				}
-			}
-			
-			function fnFileDelete(obj, id){
-				if(confirm("Do you want to file delete it?")){
-					$(obj).parents(".fileList").remove();
-					deleteFileIdArr.push(id);
-				}
-			}
-			
-			function fnViewDelete(){
-				if(confirm("Do you want to delete it?")){
-					frm.attr("action", "/board/veiw/delete");
-					frm.submit();
-				}
-			}
-			
-			function fnSubmit(){
-				if(confirm("Do you want to edit it?")){
-					frm.submit();
-				}
-			}
-			
-			$(function(){
-				frm.validate({
-					message: {
-						title:{
-							required: "Custom required, Please enter a title."
-						}
-					},
-					submitHandler: function(form){
-						if(deleteFileIdArr.length >0){
-							$.ajax({
-								url: "/file/delete.ajax",
-								type: "post",
-								data: {
-									idArr: deleteFileIdArr
-								},
-								dataType:"json",
-								success: function(r){
-									if(r.result){
-										form.submit();	
-									}else{
-										alert("A problem occurred, and progress is interrupted. Try again in a few minutes");
-									}
-								},
-								error: function(e){
-									console.log(e);
+	    }
+		
+		$(function() {
+	    	frm.validate({
+	            messages: {
+	            	title: {
+	                    required : "Custom required, Please enter a title."
+	                }
+	            },
+	            submitHandler: function (form) {
+	            	if (deleteFileIdArr.length > 0) {
+	            		$.ajax({
+							url: "/file/delete.ajax",
+							type: "post",
+							data: { idArr: deleteFileIdArr },
+							dataType: "json",
+							success: function(r) {
+								if (r.result) {
+									form.submit();
+								} else {
+									alert("A problem occurred, and progress is interrupted. Try again in a few minutes.");
 								}
-							});		
-						}else{
-							from.submit();
-						}
-					}
-				});
-			});
-		</script>
-	</th:block>
+							},
+							error: function(e) {
+								console.log("e:: "+JSON.stringify(e));
+							}
+						});
+	            	} else {
+	            		form.submit();
+	            	}
+	            }
+	        });
+	    });
+	</script>
+</th:block>
 </html>

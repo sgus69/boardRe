@@ -25,7 +25,7 @@ public class BoardFileController {
 	private final BoardFileService boardFileService;
 	
 	@GetMapping("/file/download")
-	public void downloadFile(@RequestParam()Long id, HttpServletResponse response)throws Exception{
+	public void downloadFile(@RequestParam(name="id")Long id, HttpServletResponse response)throws Exception{
 		try {
 			//파일정보를 조회한다.
 			BoardFileResponseDto fileInfo = boardFileService.findById(id);
