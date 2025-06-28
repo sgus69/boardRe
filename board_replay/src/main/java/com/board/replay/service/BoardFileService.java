@@ -44,10 +44,11 @@ public class BoardFileService {
 		System.out.println("파일 정보를 값으로 하는 Map:" + files);
 		
 		//files.entrySet()의 요소를 읽어온다.
-		Iterator<Entry<String, MultipartFile>>itr = files.entrySet().iterator();
+		Iterator<Entry<String, MultipartFile>>itr = 
+										files.entrySet().iterator();
 		System.out.println("files.entrySet()의 요소:" + itr );
 		MultipartFile mFile;
-		
+		System.out.println("itr 트루폴스:: "+ itr.hasNext());
 		String savaFilePath = "", randomFileName = "";
 		
 		Calendar cal = Calendar.getInstance();
@@ -59,8 +60,9 @@ public class BoardFileService {
 			
 			mFile = entry.getValue();
 			int fileSize = (int)mFile.getSize();
+			System.out.println("fileSize::"+ fileSize);
 			if(fileSize>0) {
-				String filePath = "C:\\study\\workspace\\uploadFiles\\";
+				String filePath = "C:\\study\\demo\\";
 				
 				//파일 업로드 경로 + 현재 년월(월별관리)
 				filePath = filePath + File.separator + 

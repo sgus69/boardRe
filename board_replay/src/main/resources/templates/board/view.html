@@ -9,23 +9,23 @@
 			th:with="info=${resultMap.info}" enctype="multipart/form-data">
 				<input type="hidden" name="id" th:value="${info.id}">
 				<div class="mb-3">
-					<label class="form-label font-weight-bold"><span class="text-danger">*</span>Title.</label>
-					<input type="text" class="form-control" name="title" th:value="${info.title}" required>
+					<label class="form-label font-weight-bold"><span class="text-danger">* </span>Title.</label>
+					<input type="text" class="form-control" name="title" th:value="${info.title}" required >
 				</div>
 				<div class="mb-3">
-					<label class="form-label font-weight-bold"><span class="text-danger">*</span>Content.</label>
-					<textarea class="form-control" rows="5" name="content" th:text="${info.content}" required></textarea>
+					<label class="form-label font-weight-bold"><span class="text-danger">* </span>Content.</label>
+					<textarea class="form-control" rows="5" name="content" th:text="${info.content}" required ></textarea>
 				</div>
 				<div class="mb-3">
-					<label class="form-label">Writer.</label>
-					<input type="text" class="form-control" name="registerId" th:value="${info.registerId}" required>
+					<label class="form-label font-weight-bold"><span class="text-danger">* </span>Writer.</label>
+					<input type="text" class="form-control" name="registerId" th:value="${info.registerId}" required >
 				</div>
 				<div class="mb-3">
 					<label class="form-label font-weight-bold mt-2">File Upload.</label>
 					<div class="mb-3" id="fileDiv">
 						<div class="custom-file mt-1">
 							<input type="file" class="custom-file-input" id="customFile"
-							onchange="fnChngFile(this);">
+							name="customFile" onchange="fnChngFile(this);">
 							<label class="custom-file-label" for="customFile">Choose file</label>
 						</div>
 					</div>
@@ -47,7 +47,7 @@
 				<div class="clearfix mt-5">
 					<div class="">
 						<button type="button" class="btn btn-success" onclick="javascript:location.href='/board/list'">Previous</button>
-						<button type="submit" class="btn btn-primary">Edit</button>
+						<button type="submit" class="btn btn-primary" onclick="fnSubmit()">Edit</button>
 						<button type="button" class="btn btn-danger" th:onclick="fnViewDelete()">Delete</button>
 					</div>
 				</div>
