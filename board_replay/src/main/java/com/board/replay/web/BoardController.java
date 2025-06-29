@@ -1,6 +1,5 @@
 package com.board.replay.web;
 
-import javax.management.RuntimeErrorException;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
