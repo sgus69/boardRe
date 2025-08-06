@@ -1,11 +1,16 @@
 package com.board.replay.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.board.replay.member.handler.AuthFailureHandler;
@@ -14,6 +19,7 @@ import com.board.replay.service.MemberService;
 
 import lombok.RequiredArgsConstructor;
 
+@Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity //시큐리티 필터 등록
 @EnableMethodSecurity(prePostEnabled = true)//특정 페이지에 특정 권한이 있는 유저만 접근을 허용할 경우 권한 및 인증을 미리 체크하겠다는 설정을 활성화한다.
@@ -31,32 +37,50 @@ public class SecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 	
-	// 시큐리티가 로그인 과정에서 password를 가로챌때 해당 해쉬로 암호화해서 비교한다.
-	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(memberService).passwordEncoder(encryptPassword());
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)throws Exception{
+		return configuration.getAuthenticationManager();
 	}
-	protected void configure(HttpSecurity http)throws Exception{
-		/*
-		 csrf 토큰 활성화시 사용
-		 쿠키를 생성할 때 HttpOnly 태그를 사용하면 클라이언트 스크립트가 보호된 쿠키에 액세스하는 위험을 줄일 수 있으므로 쿠키의 보안을 강화할 수 있다.
-		*/
-		//http.csrf().csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-		http.csrf().disable()	//csrf 토큰을 비 활성화
-			.authorizeHttpRequests() // 요청 url에 따라 접근 권한을 설정
-			.anyRequest()//다른 모든 요청은
-			.authenticated()//인증된 유저만 접근을 허용
-		.and()
-			.formLogin()//로그인 폼은
-			.loginPage("/longin")//해당 주소로 로그인 페이지를 호출한다.
-			.loginProcessingUrl("/login/action")//해당 url로 요청이 오면 스프링 시큐리티가 가로채서 로그인 처리를 한다. -> loadUserByName
-			.successHandler(authSucessHandler)//성공시 요청을 처리할 핸들러
-			.failureHandler(authFailureHandler)//실패시 요청을 처리할 핸들러
-		.and()
-			.logout()
-			.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))//로그아웃 url
-			.logoutSuccessUrl("/login")//성공시 리턴 url
-			.invalidateHttpSession(true)//인증정보를 지우고 세션을 무효화
-			.deleteCookies("JSESSIONID")//JSESSIONID  쿠키 삭제
-			.permitAll()
+	
+	@Bean
+	public UserDetailsService userDetailsService() {
+		return memberService;
+	}
+	
+	//시큐리티 필터 체인 설정
+	@Bean
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
+		http	
+			.csrf(csrf ->csrf.disable())
+			.authorizeHttpRequests(auth ->auth
+					.requestMatchers("/", "/login/**", "/js/**", "/css/**", "/image/**").permitAll()
+					.anyRequest().authenticated()
+			)
+			.formLogin(form -> form
+					.loginPage("/login")
+					.loginProcessingUrl("/login/action")
+					.successHandler(authSucessHandler)
+					.failureHandler(authFailureHandler)
+					.permitAll()
+			)
+			.logout(logout ->logout
+					.logoutRequestMatcher(new AntPathRequestMatcher("logout"))
+					.logoutSuccessUrl("/login")
+					.invalidateHttpSession(true)
+					.deleteCookies("JESSIONID")
+					.permitAll()
+			)
+			.sessionManagement(session ->session
+					.maximumSessions(1)
+					.maxSessionsPreventsLogin(false)
+					.expiredUrl("/login?error=true&exception=Have been attempted to login from a new place. or session expired")
+			)
+			.rememberMe(rememberMe ->rememberMe
+						.userDetailsService(memberService)
+						.tokenValiditySeconds(43200)
+						.rememberMeParameter("remember-me")
+						.alwaysRemember(false)
+			);
+		return http.build();
 	}
 }
