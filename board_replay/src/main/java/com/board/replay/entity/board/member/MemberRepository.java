@@ -18,5 +18,6 @@ public interface MemberRepository extends JpaRepository<Member, Long>{
 	@Modifying
 	@Query(value=UPDATE_MEMBER_LAST_LOGIN, nativeQuery = true)
 	public int updateMemberLastLogin(@Param("email")String email, @Param("lastLoginTime")LocalDateTime lastLoginTime);
+	
 	public Member findByEmail(String emfail);
 }

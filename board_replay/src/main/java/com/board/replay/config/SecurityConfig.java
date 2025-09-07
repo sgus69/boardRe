@@ -64,10 +64,10 @@ public class SecurityConfig {
 					.permitAll()
 			)
 			.logout(logout ->logout
-					.logoutRequestMatcher(new AntPathRequestMatcher("logout"))
+					.logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
 					.logoutSuccessUrl("/login")
 					.invalidateHttpSession(true)
-					.deleteCookies("JESSIONID")
+					.deleteCookies("JSESSIONID")
 					.permitAll()
 			)
 			.sessionManagement(session ->session

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.board.replay.entity.BaseTimeEntity;
@@ -59,9 +60,7 @@ public class Member extends BaseTimeEntity implements UserDetails{
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 
 		Collection<GrantedAuthority> collectors = new ArrayList<>();
-		collectors.add(()->{
-			return "계정별 등록할 권한";
-		});
+		collectors.add(new SimpleGrantedAuthority("ROLE_USER"));
 		
 		//collectors.add(new ImpleGrantedAutority ("Role"));
 		
