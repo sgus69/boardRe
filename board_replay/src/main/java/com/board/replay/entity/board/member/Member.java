@@ -10,12 +10,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.board.replay.entity.BaseTimeEntity;
 
-import groovy.transform.builder.Builder;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,14 +34,16 @@ public class Member extends BaseTimeEntity implements UserDetails{
 	private String email;
 	private String pwd;
 	private LocalDateTime lastLoginTime;
+	private String role;
 	
 	@Builder
-	public Member(Long id, String email, String pwd, LocalDateTime lastLoginTime) {
+	public Member(Long id, String email, String pwd, LocalDateTime lastLoginTime, String role) {
 		super();
 		this.id = id;
 		this.email = email;
 		this.pwd = pwd;
 		this.lastLoginTime = lastLoginTime;
+		this.role = role;
 	}
 	
 	@Override
@@ -60,7 +62,7 @@ public class Member extends BaseTimeEntity implements UserDetails{
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 
 		Collection<GrantedAuthority> collectors = new ArrayList<>();
-		collectors.add(new SimpleGrantedAuthority("ROLE_USER"));
+		collectors.add(new SimpleGrantedAuthority(role));
 		
 		//collectors.add(new ImpleGrantedAutority ("Role"));
 		
@@ -90,5 +92,4 @@ public class Member extends BaseTimeEntity implements UserDetails{
 	public boolean isEnabled() {
 		return true;
 	}
-	
 }
